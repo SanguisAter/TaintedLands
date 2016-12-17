@@ -1,14 +1,15 @@
-
 import pygame
 import sys
-# each instance for in game unit type
-# each have animations: idle x 2, move x 2, attack x 2, die x 1
+
 import collections
 
 ANIM_FRAME_TIME = 1/12.
 ANIM_FRAME_NUMBERS = 4
 
+# each instance for in game unit type
+# each have animations: idle x 2, move x 2, attack x 2, die x 1
 
+# this function retrieves 
 def get_row(sprite, row_number, frame_size):
     Y = row_number * frame_size[1]
     ret = []
@@ -37,6 +38,10 @@ class FrameAnimator():
     def get_frame_number(self, type, delta):
         self._increment_time(type, delta)
         return self.frame_number[type]
+
+    def wipe(self):
+        self.frame_number = collections.defaultdict(lambda : 0)
+        self.frame_timer = collections.defaultdict(lambda : 0.)
         
 
 class UnitSprite(pygame.sprite.Sprite):
@@ -45,6 +50,7 @@ class UnitSprite(pygame.sprite.Sprite):
         self.frame_size = frame_size
         self.frames = FrameAnimator()
         self.read_sprite(sprite_path, frame_size)
+        self.current_anim_type = None
 
     def read_sprite(self, sprite_path, frame_size):
         self.sprite= pygame.image.load(sprite_path)
@@ -58,15 +64,24 @@ class UnitSprite(pygame.sprite.Sprite):
         frame_number = self.frames.get_frame_number(name, delta)
         ret = self.sheet[name][frame_number]
         return ret
-        
-    def draw_idle(self, position, canvas, delta): 
-        self._draw(position, canvas, delta, "Idle_R")
 
-    def draw_move(self, position, canvas, delta):
-        self._draw(position, canvas, delta, "Move_R")
-
+    # this drawes sprite
+    # position on canvas, time from last frame, type of animation
+    # UnitSprite -> (int,int) -> pygame.surface -> float -> string -> None
     def _draw(self, position, canvas, delta, type):
+        if self.current_anim_type != type:
+            self.frames.wipe()
         backdrop = pygame.Rect(position, self.frame_size)
         canvas.blit(self._get_frame(type, delta), backdrop)
-        
+
+    # TODO when game object is complete then we will be able to draw anything
+    # this only should blit to canvas. Drawing of a object should be
+    # undependent on how game is implemented. This is a border post of iron
+    # curtain for drawing module
+    def draw(self, game_object, canvas):
+        pass
+
+
+    # TODO this method is only for purposes of drawing blobby
+    def draw_idle(self, position, canvas, delta, type):
 
