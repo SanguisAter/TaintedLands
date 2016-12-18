@@ -19,6 +19,8 @@ def get_row(sprite, row_number, frame_size):
         rect = pygame.Rect((X,Y),frame_size)
         sprite.set_clip(rect)
         ret += [sprite.subsurface(sprite.get_clip())]
+    if ret == []:
+        raise Exception("loaded 0 frames")
     return ret, image_width / frame_size[0]
     
 
@@ -45,7 +47,7 @@ class FrameAnimator():
         
 
 class UnitSprite(pygame.sprite.Sprite):
-    def __init__(self, sprite_path, frame_size, left_down_point):
+    def __init__(self, sprite_path, frame_size, hook_point):
         self.sheet = dict()
         self.frame_size = frame_size
         self.frames = FrameAnimator()
@@ -71,6 +73,7 @@ class UnitSprite(pygame.sprite.Sprite):
     def _draw(self, position, canvas, delta, type):
         if self.current_anim_type != type:
             self.frames.wipe()
+            self.current_anim_type = type
         backdrop = pygame.Rect(position, self.frame_size)
         canvas.blit(self._get_frame(type, delta), backdrop)
 
@@ -80,8 +83,3 @@ class UnitSprite(pygame.sprite.Sprite):
     # curtain for drawing module
     def draw(self, game_object, canvas):
         pass
-
-
-    # TODO this method is only for purposes of drawing blobby
-    def draw_idle(self, position, canvas, delta, type):
-
