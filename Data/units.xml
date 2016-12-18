@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<units>
+    <unit name="blobby" hp="20" attack="3" id="BLOBBY_001">
+        <sprite path="Data/blob.png" w="100" h="100" sx="50" sy="80">
+        </sprite>
+    </unit>
+</units>
