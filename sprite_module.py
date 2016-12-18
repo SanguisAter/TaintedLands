@@ -44,8 +44,22 @@ class FrameAnimator():
     def wipe(self):
         self.frame_number = collections.defaultdict(lambda : 0)
         self.frame_timer = collections.defaultdict(lambda : 0.)
-        
 
+
+class UnitTypeSprite():
+    def __init__(self, sprite_path, frame_size, hook_point):
+        self.sheet = dict()
+        self.frame_size = frame_size
+        self.read_sprite(sprite_path, frame_size)
+
+    def read_sprite(self, sprite_path, frame_size):
+        self.sprite= pygame.image.load(sprite_path)
+        self.sheet["Idle_R"], number_of_frames = get_row(self.sprite, 0, frame_size)
+        self.sheet["Idle_L"], number_of_frames = get_row(self.sprite, 1, frame_size)
+        self.sheet["Move_R"], number_of_frames = get_row(self.sprite, 2, frame_size)
+        self.frames.max = number_of_frames
+        
+        
 class UnitSprite(pygame.sprite.Sprite):
     def __init__(self, sprite_path, frame_size, hook_point):
         self.sheet = dict()
